@@ -30,7 +30,7 @@ class Location
   end
 
   def geo_tweet
-    @geo_tweet ||= tweets.select { |tweet| !tweet['geo'].empty?  }.select { |tweet| tweet['geo']['type'] == 'Point' }.first
+    @geo_tweet ||= tweets.select { |tweet| tweet['geo'] }.select { |tweet| tweet['geo']['type'] == 'Point' }.first
   end
 
   def tweets
