@@ -42,7 +42,7 @@ class Location
   end
 
   def json(file)
-    File.read(file).sub(%r{Grailbird.data.tweets_#{date(file)} = }, '')
+    File.read(file, :encoding => 'utf-8').sub(%r{Grailbird.data.tweets_#{date(file)} = }, '')
   end
 
   def date(file)
