@@ -4,6 +4,7 @@ require 'location'
 class Human < Sinatra::Base
   before do
     content_type :json
+    response['Access-Control-Allow-Origin'] = '*'
   end
 
   get '/' do
