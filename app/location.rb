@@ -1,19 +1,16 @@
 # Uses a Twitter archive to find the latest location
 # and resolve it to a formatted address.
-#
-# Suggest using grailbird_updater[1] to keep your archive up to date.
-#
-# [1]: https://github.com/DeMarko/grailbird_updater
 
 require 'net/http'
 require 'json'
+require 'twitter'
 
 class Location
   def location
     {
-      source: "https://twitter.com/twe4ked/statuses/#{geo_tweet['id_str']}",
+      source: geo_tweet.url,
       name: location_name,
-      time: geo_tweet['created_at'],
+      time: geo_tweet.created_at.dup.utc,
     }
   end
 
@@ -26,38 +23,20 @@ class Location
   end
 
   def latlng
-    geo_tweet['geo']['coordinates'].join(',')
+    geo_tweet.geo.coordinates.join(',')
   end
 
   def geo_tweet
-    @geo_tweet ||= tweets.select { |tweet| tweet['geo'] }.select { |tweet| tweet['geo']['type'] == 'Point' }.first
+    @geo_tweet ||= client.user_timeline('twe4ked').select(&:geo?).first
   end
 
   def tweets
-    json = []
-    files.each do |file|
-      json << JSON.parse(json file)
+  end
+
+  def client
+    Twitter::REST::Client.new do |config|
+      config.consumer_key = ENV['TWITTER_CONSUMER_KEY']
+      config.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
     end
-    json.flatten.sort_by { |tweet| tweet['created_at'] }.reverse
-  end
-
-  def json(file)
-    File.read(file, :encoding => 'utf-8').sub(%r{Grailbird.data.tweets_#{date(file)} = }, '')
-  end
-
-  def date(file)
-    File.basename(file).sub /\..+/, ''
-  end
-
-  def files
-    if File.directory? tweets_folder
-      Dir.glob "#{tweets_folder}/data/js/tweets/*.js"
-    else
-      raise '"tweets" directory not found'
-    end
-  end
-
-  def tweets_folder
-    ENV['TWEETS_FOLDER']
   end
 end
