@@ -10,7 +10,7 @@ class Location
     {
       source: geo_tweet.url,
       name: location_name,
-      time: geo_tweet.created_at.dup.utc,
+      source_created_at: geo_tweet.created_at.dup.utc,
     }
   end
 
