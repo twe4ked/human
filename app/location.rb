@@ -27,10 +27,11 @@ class Location
   end
 
   def geo_tweet
-    @geo_tweet ||= client.user_timeline('twe4ked').select(&:geo?).first
+    @geo_tweet ||= tweets.select(&:geo?).first
   end
 
   def tweets
+    client.user_timeline('twe4ked')
   end
 
   def client
