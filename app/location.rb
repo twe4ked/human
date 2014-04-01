@@ -31,7 +31,7 @@ class Location
   end
 
   def tweets
-    client.user_timeline('twe4ked')
+    client.user_timeline(ENV['TWITTER_USER'])
   end
 
   def client
