@@ -18,12 +18,12 @@ class Location
 
   def location_name
     case
+    when geo_tweet.place?
+      geo_tweet.place['full_name']
     when geo_tweet.geo?
       JSON.parse(location_names)['results'].select do |result|
         result['types'] == %w[locality political]
       end.first['formatted_address']
-    when geo_tweet.place?
-      geo_tweet.place['full_name']
     end
   end
 
