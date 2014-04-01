@@ -17,9 +17,12 @@ class Location
   private
 
   def location_name
+    JSON.parse(location_names)['results'].select { |result| result['types'] == %w[locality political] }.first['formatted_address']
+  end
+
+  def location_names
     uri = URI("http://maps.googleapis.com/maps/api/geocode/json?latlng=#{latlng}&sensor=false")
     locations = Net::HTTP.get(uri)
-    JSON.parse(locations)['results'].select { |result| result['types'] == %w[locality political] }.first['formatted_address']
   end
 
   def latlng
