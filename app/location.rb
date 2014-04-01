@@ -17,9 +17,14 @@ class Location
   private
 
   def location_name
-    JSON.parse(location_names)['results'].select do |result|
-      result['types'] == %w[locality political]
-    end.first['formatted_address']
+    case
+    when geo_tweet.geo?
+      JSON.parse(location_names)['results'].select do |result|
+        result['types'] == %w[locality political]
+      end.first['formatted_address']
+    when geo_tweet.place?
+      geo_tweet.place['full_name']
+    end
   end
 
   def location_names
@@ -32,7 +37,7 @@ class Location
   end
 
   def geo_tweet
-    @geo_tweet ||= tweets.select(&:geo?).first
+    @geo_tweet ||= tweets.select { |tweet| tweet.geo? || tweet.place? }.first
   end
 
   def tweets
