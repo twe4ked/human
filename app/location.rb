@@ -17,7 +17,9 @@ class Location
   private
 
   def location_name
-    JSON.parse(location_names)['results'].select { |result| result['types'] == %w[locality political] }.first['formatted_address']
+    JSON.parse(location_names)['results'].select do |result|
+      result['types'] == %w[locality political]
+    end.first['formatted_address']
   end
 
   def location_names
